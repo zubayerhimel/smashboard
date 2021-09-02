@@ -31,3 +31,21 @@
 .filter-card .ant-card-body {
   padding-bottom: 0 !important;
 }
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+}
+
+.text {
+  color: rgb(65, 65, 65);
+  display: flex;
+  align-self: center;
+  font-size: 1.2em;
+}
+
+.count {
+  font-size: 3em;
+  font-weight: bold;
+}

@@ -1,27 +1,29 @@
 import React from "react";
 import Chart from "react-apexcharts";
 
-export default function QuerySummaryPie({querySummaryData}) {
-  let series = [], labels = [];
-  querySummaryData?.map(el => series.push(el.count))
-  querySummaryData?.map(el => labels.push(el.type))
+export default function SentimentDonut({ sentimentData }) {
+  let series = [],
+    labels = [];
+
+  sentimentData?.map((el) => series.push(el.count));
+  sentimentData?.map((el) => labels.push(el.sentiment));
+
   const options = {
+    labels,
     chart: {
-      width: 380,
-      type: "pie",
+      type: "donut",
     },
     title: {
-      text: "Query Summary",
+      text: "Sentiment",
       align: "left",
       margin: 20,
     },
-    labels,
     responsive: [
       {
         breakpoint: 480,
         options: {
           chart: {
-            width: 200,
+            width: 400,
           },
           legend: {
             position: "bottom",
@@ -33,7 +35,7 @@ export default function QuerySummaryPie({querySummaryData}) {
 
   return (
     <div>
-      <Chart options={options} series={series} type="pie" width="500" />
+      <Chart options={options} series={series} type="donut" width="500" />
     </div>
   );
 }
