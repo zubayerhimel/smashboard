@@ -100,10 +100,7 @@ const formatData = (data) => {
 };
 
 export default function MonthlyTrendLine({ monthlyTrendData }) {
-  console.log(monthlyTrendData);
   const { firstMonthName, lastMonthName, firstmonth, lastMonth } = formatData(monthlyTrendData);
-  console.log(firstmonth);
-  console.log(lastMonth);
   const series = [
     {
       name: firstMonthName,

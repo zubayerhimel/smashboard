@@ -18,6 +18,15 @@
   background-color: #005ed8;
 }
 
+.heading {
+  font-size: 2em;
+  color: #fff;
+  font-weight: 600;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .content {
   padding: 1% 8%;
   min-height: 100vh;

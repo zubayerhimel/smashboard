@@ -33,11 +33,12 @@ export default function MainComponent() {
 
   // FUNCTIONS
   const onFinish = (values) => {
-    console.log(values);
+    console.log(values.dateRange[0].format("YYYY-MM-DD"));
+    console.log(values.dateRange[1].format("YYYY-MM-DD"));
   };
 
   const getAccounts = () => {
-    BaseURL.get("/get-accounts/6")
+    BaseURL.get("/get-accounts/1")
       .then((res) => {
         console.log(res);
       })
@@ -110,6 +111,7 @@ export default function MainComponent() {
     <Layout className="layout">
       <Header className="header">
         <img src="https://smashboard.co/img/smashboard-logo.png" alt="logo" className="logo" />
+        <span className="heading">Dashboard</span>
       </Header>
       <Content className="content">
         <div className="site-layout-content">
