@@ -15,23 +15,35 @@ const { Option } = Select;
 
 export default function MainComponent() {
   const [form] = Form.useForm();
-  const [monthlyTrendData, setMonthlyTrendData] = useState([])
+  const [accountsData, setAccountsData] = useState([]);
+  const [monthlyTrendData, setMonthlyTrendData] = useState([]);
   const [sentimentData, setSentimentData] = useState([]);
   const [showFilter, setShowFilter] = useState(false);
   const [querySummaryData, setQuerySummaryData] = useState([]);
   const [tagsData, setTagsData] = useState([]);
 
   useEffect(() => {
+    getAccounts();
     getSentimentData();
     getTagsData();
     getQuerySummary();
-    getMonthlyTrendData()
+    getMonthlyTrendData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // FUNCTIONS
   const onFinish = (values) => {
     console.log(values);
+  };
+
+  const getAccounts = () => {
+    BaseURL.get("/get-accounts/6")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const getSentimentData = () => {
@@ -46,7 +58,7 @@ export default function MainComponent() {
       })
       .catch((err) => {
         console.log(err);
-      })
+      });
   };
 
   const getTagsData = () => {
@@ -61,7 +73,7 @@ export default function MainComponent() {
       })
       .catch((err) => {
         console.log(err);
-      })
+      });
   };
 
   const getQuerySummary = () => {
@@ -76,7 +88,7 @@ export default function MainComponent() {
       })
       .catch((err) => {
         console.log(err);
-      })
+      });
   };
 
   const getMonthlyTrendData = () => {
@@ -91,10 +103,8 @@ export default function MainComponent() {
       })
       .catch((err) => {
         console.log(err);
-      })
-  }
-
-  
+      });
+  };
 
   return (
     <Layout className="layout">
@@ -103,73 +113,71 @@ export default function MainComponent() {
       </Header>
       <Content className="content">
         <div className="site-layout-content">
-         
-            <Row justify="end" style={{ marginBottom: 10 }}>
-              <Button onClick={() => setShowFilter(!showFilter)} style={{ borderRadius: 6 }} type="primary">
-                {showFilter ? "Hide" : "Show"} Filter
-              </Button>
-            </Row>
-            {showFilter && (
-              <Form form={form} name="search" onFinish={onFinish}>
-                <Card className="card filter-card" style={{ margin: "15px 0" }}>
-                  <Row gutter={[16, 16]}>
-                    <Col xs={{ span: 24 }} md={{ span: 12 }} lg={{ span: 8 }}>
-                      <Form.Item name="account">
-                        <Select placeholder="Select Account" style={{ borderRadius: "6px !important" }}></Select>
-                      </Form.Item>
-                    </Col>
-                    <Col xs={{ span: 24 }} md={{ span: 12 }} lg={{ span: 8 }}>
-                      <Form.Item name="dateRange">
-                        <RangePicker style={{ width: "100%", borderRadius: 6 }} />
-                      </Form.Item>
-                    </Col>
-                    <Col xs={{ span: 24 }} md={{ span: 12 }} lg={{ span: 8 }}>
-                      <Form.Item>
-                        <Button type="primary" htmlType="submit" block style={{ borderRadius: 6 }}>
-                          Filter
-                        </Button>
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </Card>
-              </Form>
-            )}
-            <div style={{ marginTop: 10 }}>
-              {/* CHARTS */}
-              <Row gutter={[16, 16]}>
-                {/* <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                  <CustomCard text="Incoming Queries" count={querySummaryData?.incoming[0].count || 0} fontColor="#018ffb" />
-                </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                  <CustomCard text="Incoming Queries Today" count={querySummaryData?.incomingToday[0].count || 0} fontColor="#FC8404" />
-                </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 8 }}>
-                  <CustomCard text="Unique Fans" count={querySummaryData?.uniqueFans[0].count || 0} fontColor="#6BB31B" />
-                </Col> */}
+          <Row justify="end" style={{ marginBottom: 10 }}>
+            <Button onClick={() => setShowFilter(!showFilter)} style={{ borderRadius: 6 }} type="primary">
+              {showFilter ? "Hide" : "Show"} Filter
+            </Button>
+          </Row>
+          {showFilter && (
+            <Form form={form} name="search" onFinish={onFinish}>
+              <Card className="card filter-card" style={{ margin: "15px 0" }}>
+                <Row gutter={[16, 16]}>
+                  <Col xs={{ span: 24 }} md={{ span: 12 }} lg={{ span: 8 }}>
+                    <Form.Item name="account">
+                      <Select placeholder="Select Account" style={{ borderRadius: "6px !important" }}></Select>
+                    </Form.Item>
+                  </Col>
+                  <Col xs={{ span: 24 }} md={{ span: 12 }} lg={{ span: 8 }}>
+                    <Form.Item name="dateRange">
+                      <RangePicker style={{ width: "100%", borderRadius: 6 }} />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={{ span: 24 }} md={{ span: 12 }} lg={{ span: 8 }}>
+                    <Form.Item>
+                      <Button type="primary" htmlType="submit" block style={{ borderRadius: 6 }}>
+                        Filter
+                      </Button>
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Card>
+            </Form>
+          )}
+          <div style={{ marginTop: 10 }}>
+            {/* CHARTS */}
+            <Row gutter={[16, 16]}>
+              <Col xs={{ span: 24 }} lg={{ span: 8 }}>
+                <CustomCard text="Incoming Queries" count={querySummaryData.incoming ? querySummaryData.incoming[0].count : 0} fontColor="#018ffb" />
+              </Col>
+              <Col xs={{ span: 24 }} lg={{ span: 8 }}>
+                <CustomCard text="Incoming Queries Today" count={querySummaryData.incomingToday ? querySummaryData.incomingToday[0].count : 0} fontColor="#FC8404" />
+              </Col>
+              <Col xs={{ span: 24 }} lg={{ span: 8 }}>
+                <CustomCard text="Unique Fans" count={querySummaryData.uniqueFans ? querySummaryData.uniqueFans[0].count : 0} fontColor="#6BB31B" />
+              </Col>
 
-                <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                  <Card className="card">
-                    <QuerySummaryPie querySummaryData={querySummaryData.types} />
-                  </Card>
-                </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                  <Card className="card">
-                    <MonthlyTrendLine monthlyTrendData={monthlyTrendData} />
-                  </Card>
-                </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                  <Card className="card">
-                    <SentimentDonut sentimentData={sentimentData} />
-                  </Card>
-                </Col>
-                <Col xs={{ span: 24 }} lg={{ span: 12 }}>
-                  <Card className="card">
-                    <TagsBar tagsData={tagsData} />
-                  </Card>
-                </Col>
-              </Row>
-            </div>
-        
+              <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                <Card className="card">
+                  <QuerySummaryPie querySummaryData={querySummaryData.types} />
+                </Card>
+              </Col>
+              <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                <Card className="card">
+                  <MonthlyTrendLine monthlyTrendData={monthlyTrendData} />
+                </Card>
+              </Col>
+              <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                <Card className="card">
+                  <SentimentDonut sentimentData={sentimentData} />
+                </Card>
+              </Col>
+              <Col xs={{ span: 24 }} lg={{ span: 12 }}>
+                <Card className="card">
+                  <TagsBar tagsData={tagsData} />
+                </Card>
+              </Col>
+            </Row>
+          </div>
         </div>
       </Content>
       <Footer style={{ textAlign: "center" }}>Smashboard © {new Date().getFullYear()}</Footer>
