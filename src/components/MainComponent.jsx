@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, DatePicker, Form, Layout, Row, Select, Spin } from "antd";
+import { Button, Card, Col, DatePicker, Form, Layout, Row, Select } from "antd";
 
 import "./style.css";
 import MonthlyTrendLine from "./charts/MonthlyTrendLine";
 import QuerySummaryPie from "./charts/QuerySummaryPie";
 import SentimentDonut from "./charts/SentimentDonut";
 import TagsBar from "./charts/TagsBar";
+import Notification from "./Notification";
 import { BaseURL } from "../Api";
 import CustomCard from "./CustomCard";
 
@@ -33,77 +34,83 @@ export default function MainComponent() {
 
   // FUNCTIONS
   const onFinish = (values) => {
-    console.log(values.dateRange[0].format("YYYY-MM-DD"));
-    console.log(values.dateRange[1].format("YYYY-MM-DD"));
+    const account = values.account;
+    const startDate = values.dateRange[0].format("YYYY-MM-DD");
+    const endDate = values.dateRange[1].format("YYYY-MM-DD");
+    getSentimentData(account, startDate, endDate);
+    getTagsData(account, startDate, endDate);
+    getQuerySummary(account, startDate, endDate);
+    getMonthlyTrendData(account, startDate, endDate);
   };
 
   const getAccounts = () => {
-    BaseURL.get("/get-accounts/1")
+    BaseURL.get(`/accounts/get-accounts/1`)
       .then((res) => {
         console.log(res);
+        setAccountsData(res.data.body.data);
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const getSentimentData = () => {
-    BaseURL.post("/get-sentiments-by-account", {
-      id: 6,
-      startDate: "2020-05-05",
-      endDate: "2020-06-30",
+  const getSentimentData = (id = 6, startDate = "2020-05-05", endDate = "2020-06-30") => {
+    BaseURL.post("/dashboard/get-sentiments-by-account", {
+      id,
+      startDate,
+      endDate,
     })
       .then((res) => {
         console.log(res.data.body.data);
         setSentimentData(res.data.body.data);
       })
       .catch((err) => {
-        console.log(err);
+        Notification("Error", "Something went wrong! Please select different date and id", "error");
       });
   };
 
-  const getTagsData = () => {
-    BaseURL.post("/get-top-tags", {
-      id: 6,
-      startDate: "2021-09-01",
-      endDate: "2021-09-02",
+  const getTagsData = (id = 6, startDate = "2021-09-01", endDate = "2021-09-02") => {
+    BaseURL.post("/dashboard/get-top-tags", {
+      id,
+      startDate,
+      endDate,
     })
       .then((res) => {
         console.log(res);
         setTagsData(res.data.body.data);
       })
       .catch((err) => {
-        console.log(err);
+        Notification("Error", "Something went wrong! Please select different date and id", "error");
       });
   };
 
-  const getQuerySummary = () => {
-    BaseURL.post("/get-query-summery", {
-      id: 6,
-      startDate: "2020-05-05",
-      endDate: "2020-06-30",
+  const getQuerySummary = (id = 6, startDate = "2020-05-05", endDate = "2020-06-30") => {
+    BaseURL.post("/dashboard/get-query-summery", {
+      id,
+      startDate,
+      endDate,
     })
       .then((res) => {
         console.log(res);
         setQuerySummaryData(res.data.body);
       })
       .catch((err) => {
-        console.log(err);
+        Notification("Error", "Something went wrong! Please select different date and id", "error");
       });
   };
 
-  const getMonthlyTrendData = () => {
-    BaseURL.post("/get-monthly-comparison", {
-      id: 6,
-      startDate: "2020-05-05",
-      endDate: "2020-06-30",
+  const getMonthlyTrendData = (id = 6, startDate = "2020-05-05", endDate = "2020-06-30") => {
+    BaseURL.post("/dashboard/get-monthly-comparison", {
+      id,
+      startDate,
+      endDate,
     })
       .then((res) => {
         console.log(res.data.body);
         setMonthlyTrendData(res.data.body.data);
       })
       .catch((err) => {
-        console.log(err);
+        Notification("Error", "Something went wrong! Please select different date and id", "error");
       });
   };
 
@@ -126,7 +133,13 @@ export default function MainComponent() {
                 <Row gutter={[16, 16]}>
                   <Col xs={{ span: 24 }} md={{ span: 12 }} lg={{ span: 8 }}>
                     <Form.Item name="account">
-                      <Select placeholder="Select Account" style={{ borderRadius: "6px !important" }}></Select>
+                      <Select placeholder="Select Account" style={{ borderRadius: "6px !important" }}>
+                        {accountsData?.map((el, i) => (
+                          <Option key={i} value={el.id}>
+                            {el.name}
+                          </Option>
+                        ))}
+                      </Select>
                     </Form.Item>
                   </Col>
                   <Col xs={{ span: 24 }} md={{ span: 12 }} lg={{ span: 8 }}>
